@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SocialSecurityChecker
@@ -9,7 +10,8 @@ namespace SocialSecurityChecker
         {
             while (true)
             {
-                Console.Write("Ange personnummer (YYYYMMDDNNNN): ");
+                // ASK USER FOR A INPUT AND SAVES IT AS A STRING IN userInput
+                Console.Write("Enter a social security number (YYYYMMDDNNNN): ");
                 string userInput = Console.ReadLine();
                 // BOOL VARIABLES CONNECTED TO RETURNS FROM THE METHODS
                 bool validLength = InputCheck(userInput);
@@ -17,33 +19,39 @@ namespace SocialSecurityChecker
                 bool validMonth = MonthCheck(userInput);
                 bool validDay = DayCheck(userInput);
                 bool validNumbers = BirthNrCheck(userInput);
-                //TROUBLESHOOTING
-                Console.WriteLine($"Valid Length: {validLength}");
-                Console.WriteLine($"Valid Year: {validYear}");
-                Console.WriteLine($"Valid Month: {validMonth}");
-                Console.WriteLine($"Valid Day: {validDay}");
-                //END OF TROUBLESHOOTING
-                if (validLength && validYear && validMonth && validDay)
+                // IF ALL VARIBLES COMES BACK TRUE BELOW, THE SOCIAL SECURITY NUMBER IS CORRECT
+                if (validLength && validYear && validMonth && validDay && validNumbers)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Your social security number is correct!\n");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Your social security number is not correct!\n");
+                    Console.ResetColor();
                 }
             }
         }
-        // 12 NUMBERS (L2 = 10 OR 12 NUMBERS)
+        // METHOD TO CHECK THAT THE INPUT PROVIDED BY THE USER IS 12 CHARACTERS, IF NOT A ERROR IS DISPLAYED AND USER HAS TO REENTER THE SOCIAL SECURITY NUMBER
         static bool InputCheck(string userInput)
         {
-            int length = Convert.ToInt32(userInput.Length);
-            if (length == 12)
+            if (userInput.Length == 12)
             {
                 return true;
             }
-            else
+            else if (userInput.Length < 12)
             {
-                Console.WriteLine("(!) Incorrect amount of numbers, please try again!");
-                return false;
+                Console.WriteLine("(!) Too few numbers, please try again!");
             }
+            else if (userInput.Length > 12)
+            {
+                Console.WriteLine("(!) Too many numbers, please try again!");
+            }
+            return false;
         }
-        // BOOL METHOD TO CHECK THAT THE INPUT YEAR IS BETWEEN 1753 - 2020, ALSO HAVE ERROR HANDLING IF USER INPUTS INCORRECT INPUTS LIKE *"%#¤! OR LETTERS
+        // METHOD TO CHECK THAT THE INPUT YEAR IS BETWEEN 1753 - 2020, ALSO HAVE ERROR HANDLING IF USER INPUTS INCORRECT INPUTS LIKE *"%#¤! OR LETTERS
         static bool YearCheck(string userInput) 
         {
             try
@@ -62,7 +70,7 @@ namespace SocialSecurityChecker
                 return false;
             }
         }
-        // BOOL METHOD TO CHECK THAT THE MONTH INPUT IS BETWEEN 1-12 (JAN-DEC), ALSO HAVE ERROR HANDLING IF USER INPUTS INCORRECT INPUTS LIKE *"%#¤! OR LETTERS
+        // METHOD TO CHECK THAT THE MONTH INPUT IS BETWEEN 1-12 (JAN-DEC), ALSO HAVE ERROR HANDLING IF USER INPUTS INCORRECT INPUTS LIKE *"%#¤! OR LETTERS
         static bool MonthCheck(string userInput) 
         {
             try
@@ -81,11 +89,12 @@ namespace SocialSecurityChecker
                 return false;
             }
         }
-        // BOOL METHOD TO CHECK THAT THE DAY USER HAS TYPED IS CORRECT VS THE MONTH
+        // METHOD TO CHECK THAT THE DAY USER HAS TYPED IS CORRECT VS THE MONTH
         static bool DayCheck(string userInput)
         {
             try
             {
+                int year = Convert.ToInt32(userInput.Substring(0, 4));
                 int month = Convert.ToInt32(userInput.Substring(4, 2));
                 int day = Convert.ToInt32(userInput.Substring(6, 2));
                 switch (month)
@@ -111,8 +120,47 @@ namespace SocialSecurityChecker
                         }
                         break;
                     case 2:
-                        Console.WriteLine("Februari 28/29 dagar | Work in progress");
-                        break;
+                        if (year % 400 == 0)
+                        {
+                            if (day >= 1 && day <= 29)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"(!) Incorrect day number ({day}). {year} is not a leap year, try again!");
+                            }
+                            return false;
+                        }
+                        else if (year % 100 == 0)
+                        {
+                            if(day >= 1 && day <= 28)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"(!) Incorrect day number ({day}). {year} is not a leap year, try again!");
+                            }
+                            return false;
+                        }
+                        else if (year % 4 == 0)
+                        {
+                            if(day >= 1 && day <= 29)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"(!) Incorrect day number ({day}). {year} is not a leap year, try again!");
+                            }
+                            return false;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Incorrect amount of days ({day}) in February, not a leap year");
+                            return false;
+                        }
                 }
             }
             catch
@@ -122,21 +170,27 @@ namespace SocialSecurityChecker
             }
             return false;
         }
-        static bool BirthNrCheck(string userInput) // NUMBER BETWEEN 0-999
+        // METHOD TO CHECK IF THE LAST 4 NUMBERS ARE IN THE CORRECT FORM, ALSO CHECKS IF THE 3TH NUMBER IS ODD OR EVEN (ODD = MALE, EVEN = FEMALE, 0 = FEMALE)
+        static bool BirthNrCheck(string userInput) 
         {
             try
             {
-                int numbers = Convert.ToInt32(userInput.Substring(8, 4));
-                int lastNumber = Convert.ToInt32(userInput.Substring(10, 1));
+                int genderNumber = Convert.ToInt32(userInput.Substring(10, 1));
+                if (genderNumber % 2 == 0)
+                {
+                    Console.WriteLine("Gender: Kvinna");
+                }
+                else
+                {
+                    Console.WriteLine("Gender: Man");
+                }
+                return true;
             }
             catch
             {
-                Console.WriteLine("(!) incorrect character(s) in last four numbers, try again!");
+                Console.WriteLine("(!) incorrect character(s) in the last four numbers, try again!");
+
             }
-            return false;
-        }
-        static bool ControlNrCheck() // LUHN ALGORITHM
-        {
             return false;
         }
     }
