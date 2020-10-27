@@ -12,6 +12,7 @@ namespace SocialSecurityChecker
             {
                 Console.Write("Enter a social security number (YYYYMMDDNNNN): ");
                 string userInput = Console.ReadLine();
+                string gender = GenderCheck(userInput);
 
                 bool validLength = InputCheck(userInput);
                 bool validYear = YearCheck(userInput);
@@ -24,7 +25,7 @@ namespace SocialSecurityChecker
                 if (validLength && validYear && validMonth && validDay && validLastFour)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Social security number {userInput} is correct!");
+                    Console.WriteLine($"Social security number {userInput} is correct!\nGender: {gender}");
                     Console.ResetColor();
                 }
                 else
@@ -33,13 +34,13 @@ namespace SocialSecurityChecker
                     Console.WriteLine($"Social security number {userInput} is not correct, please try again!\n");
                     Console.ResetColor();
                 }
-                Debug(validLength, validYear, leapYear, validMonth, validDay, validLastFour, validControlNumber); // REMOVE WITH FINAL RELEASE
+                Debug(validLength, validYear, leapYear, validMonth, validDay, validLastFour, validControlNumber, gender); // REMOVE WITH FINAL RELEASE
                 Console.WriteLine("\nPress any key to search again or ctrl+c to quit");
                 Console.ReadKey();
             }
         }
         // REMOVE WITH FINAL RELEASE
-        static void Debug(bool validLength, bool validYear, bool leapYear, bool validMonth, bool validDay, bool validLastFour, bool validControlNumber)
+        static void Debug(bool validLength, bool validYear, bool leapYear, bool validMonth, bool validDay, bool validLastFour, bool validControlNumber, string gender)
         {
             Console.WriteLine("\n**********DEBUG**********");
             Console.WriteLine($"Length: {validLength}");
@@ -49,6 +50,7 @@ namespace SocialSecurityChecker
             Console.WriteLine($"Day: {validDay}");
             Console.WriteLine($"Last 4: {validLastFour}");
             Console.WriteLine($"Control Number: {validControlNumber}");
+            Console.WriteLine($"Gender: {gender}");
             Console.WriteLine("**********DEBUG**********");
             // END OF DEBUG
         }
@@ -152,7 +154,7 @@ namespace SocialSecurityChecker
                         }
                         else
                         {
-                            Console.WriteLine();
+                            Console.WriteLine($"(!) Incorrect day ({day})");
                         }
                         break;
                     case 2:
@@ -162,12 +164,20 @@ namespace SocialSecurityChecker
                             {
                                 return true;
                             }
-                        else if (!leapYear)
+                            else
                             {
-                                if (day >= 1 && day <= 28)
-                                {
-                                    return true;
-                                }
+                                Console.WriteLine($"(!) Incorrect day ({day})");
+                            }
+                        }
+                        else if (!leapYear)
+                        {
+                            if (day >= 1 && day <= 28)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"(!) Incorrect day ({day})");
                             }
                         }
                         else if (day >= 1 && day <= 28)
@@ -196,6 +206,25 @@ namespace SocialSecurityChecker
                 Console.WriteLine("(!) incorrect character(s) in the last four numbers");
             }
             return false;
+        }
+        static string GenderCheck(string userInput)
+        {
+            try
+            {
+                int penultimateNumber = Convert.ToInt32(userInput.Substring(10, 1));
+                if (penultimateNumber % 2 == 0 || penultimateNumber == 0)
+                {
+                    return "Female";
+                }
+                else
+                {
+                    return "Male";
+                }
+            }
+            catch
+            {
+                return "";
+            }
         }
         // METHOD TO CHECK THE CONTROL DIGIT IN THE SOOCIAL SECURITY NUMBER, USING THE LUHN ALGORITHM
         static bool ControlNumberCheck(string userInput) 
