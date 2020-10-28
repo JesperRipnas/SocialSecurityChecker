@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
 
 namespace SocialSecurityChecker
 {
@@ -13,15 +11,14 @@ namespace SocialSecurityChecker
                 Console.Write("Enter a social security number (YYYYMMDDNNNN): ");
                 string userInput = Console.ReadLine();
                 string gender = GenderCheck(userInput);
-
+                // RUNS THE INPUT IN EACH METHOD BELOW
                 bool validLength = InputCheck(userInput);
                 bool validYear = YearCheck(userInput);
                 bool leapYear = LeapYearCheck(userInput);
                 bool validMonth = MonthCheck(userInput);
                 bool validDay = DayCheck(userInput, leapYear);
                 bool validLastFour = LastFourCheck(userInput);
-                bool validControlNumber = ControlNumberCheck(userInput);
-
+                // PRINT OUT BASED ON RETURN OF METHODS + GENDER
                 if (validLength && validYear && validMonth && validDay && validLastFour)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -34,25 +31,9 @@ namespace SocialSecurityChecker
                     Console.WriteLine($"Social security number {userInput} is not correct, please try again!\n");
                     Console.ResetColor();
                 }
-                Debug(validLength, validYear, leapYear, validMonth, validDay, validLastFour, validControlNumber, gender); // REMOVE WITH FINAL RELEASE
-                Console.WriteLine("\nPress any key to search again or ctrl+c to quit");
+                Console.WriteLine("\nPress enter key to search again or ctrl+c to quit");
                 Console.ReadKey();
             }
-        }
-        // REMOVE WITH FINAL RELEASE
-        static void Debug(bool validLength, bool validYear, bool leapYear, bool validMonth, bool validDay, bool validLastFour, bool validControlNumber, string gender)
-        {
-            Console.WriteLine("\n**********DEBUG**********");
-            Console.WriteLine($"Length: {validLength}");
-            Console.WriteLine($"Year: {validYear}");
-            Console.WriteLine($"Leap Year: {leapYear}");
-            Console.WriteLine($"Month: {validMonth}");
-            Console.WriteLine($"Day: {validDay}");
-            Console.WriteLine($"Last 4: {validLastFour}");
-            Console.WriteLine($"Control Number: {validControlNumber}");
-            Console.WriteLine($"Gender: {gender}");
-            Console.WriteLine("**********DEBUG**********");
-            // END OF DEBUG
         }
         static bool InputCheck(string userInput)
         {
@@ -88,6 +69,7 @@ namespace SocialSecurityChecker
                 return false;
             }
         }
+        // LEAP YEAR OR NOT
         static bool LeapYearCheck(string userInput)
         {
             try
@@ -129,6 +111,7 @@ namespace SocialSecurityChecker
                 return false;
             }
         }
+        // BASED ON WHAT MONTH USER ENTERED, CHECK IF THE DAY IS IN THE RANGE OF THAT MONTH
         static bool DayCheck(string userInput, bool leapYear)
         {
             try
@@ -194,6 +177,7 @@ namespace SocialSecurityChecker
             }
             return false;
         }
+        // SIMPLE CONVERT TO CHECK THAT THE FOUR LAST NUMBERS ARE IN FORM AV NUMBERS
         static bool LastFourCheck(string userInput) 
         {
             try
@@ -207,6 +191,7 @@ namespace SocialSecurityChecker
             }
             return false;
         }
+        // GENDER CHECK BASED ON THE PENULTIMATE NUMBER IN THE INPUT
         static string GenderCheck(string userInput)
         {
             try
@@ -225,11 +210,6 @@ namespace SocialSecurityChecker
             {
                 return "";
             }
-        }
-        // METHOD TO CHECK THE CONTROL DIGIT IN THE SOOCIAL SECURITY NUMBER, USING THE LUHN ALGORITHM
-        static bool ControlNumberCheck(string userInput) 
-        {
-            return false;
         }
     }
 }
