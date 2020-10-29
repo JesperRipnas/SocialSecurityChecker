@@ -33,11 +33,19 @@ namespace SocialSecurityChecker
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Social security number {userInput} is not correct, please try again!\n");
+                    Console.WriteLine($"Social security number {userInput} is not correct, please try again!");
                     Console.ResetColor();
                 }
-                Console.WriteLine("\nPress enter key to search again or ctrl+c to quit\n");
-                Console.ReadKey();
+                Console.Write("\nSearch again? (y/n): ");
+                if (Console.ReadLine().ToLower() == "y")
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine("Terminating program, Goodbye!");
+                    break;
+                }
             }
         }
         static void Menu()
@@ -77,16 +85,11 @@ namespace SocialSecurityChecker
                     {
                         return "19" + trimmedSSN;
                     }
-                    else
-                    {
-                        Console.WriteLine("(!) not a valid character");
-                    }
                 }
-                return userInput;
+            return "";
             }
             catch
             {
-                Console.WriteLine("(!) Not a valid input");
                 return "";
             }
         }
@@ -115,12 +118,10 @@ namespace SocialSecurityChecker
                 {
                     return true;
                 }
-                Console.WriteLine($"(!) Not a valid year");
                 return false;
             }
             catch
             {
-                Console.WriteLine("(!) incorrect character(s) in year");
                 return false;
             }
         }
@@ -156,12 +157,10 @@ namespace SocialSecurityChecker
                 {
                     return true;
                 }
-                Console.WriteLine($"(!) Not a valid month");
                 return false;
             }
             catch
             {
-                Console.WriteLine("(!) incorrect character(s) in month");
                 return false;
             }
         }
@@ -179,19 +178,11 @@ namespace SocialSecurityChecker
                         {
                             return true;
                         }
-                        else
-                        {
-                            Console.WriteLine($"(!) Not a valid day");
-                        }
                         break;
                     case 4: case 6: case 9: case 11:
                         if (day >= 1 && day <= 30)
                         {
                             return true;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"(!) Not a valid day");
                         }
                         break;
                     case 2:
@@ -201,20 +192,12 @@ namespace SocialSecurityChecker
                             {
                                 return true;
                             }
-                            else
-                            {
-                                Console.WriteLine($"(!) Not a valid day");
-                            }
                         }
                         else if (!leapYear)
                         {
                             if (day >= 1 && day <= 28)
                             {
                                 return true;
-                            }
-                            else
-                            {
-                                Console.WriteLine($"(!) Not a valid day");
                             }
                         }
                         else if (day >= 1 && day <= 28)
@@ -226,7 +209,6 @@ namespace SocialSecurityChecker
             }
             catch
             {
-                Console.WriteLine("(!) incorrect character(s) in day");
                 return false;
             }
             return false;
@@ -240,9 +222,8 @@ namespace SocialSecurityChecker
             }
             catch
             {
-                Console.WriteLine("(!) incorrect character(s) in the last four digits");
+                return false;
             }
-            return false;
         }
         static string GenderCheck(string socialSecurityNumber)
         {
@@ -307,7 +288,6 @@ namespace SocialSecurityChecker
                 }
                 else
                 {
-                    Console.WriteLine("(!) Not a valid control number");
                     return false;
                 }
             }
