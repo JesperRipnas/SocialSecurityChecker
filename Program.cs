@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 
 namespace SocialSecurityChecker
 {
@@ -6,6 +8,7 @@ namespace SocialSecurityChecker
     {
         static void Main(string[] args)
         {
+            Menu();
             while (true)
             {
                 Console.Write("Enter a social security number: ");
@@ -38,6 +41,13 @@ namespace SocialSecurityChecker
                 Console.ReadKey();
             }
         }
+        static void Menu()
+        {
+            Console.WriteLine("Valid inputs");
+            Console.WriteLine("YYYYMMDDNNNN");
+            Console.WriteLine("YYMMDD-NNNN");
+            Console.WriteLine("YYMMDD+NNNN\n");
+        }
         // IF USER INPUT IS < 12, REMOVE THE SYMBOL (-/+) & CONVERTS IT TO A 12 DIGIT NUMBER.
         static string ConvertUserInput(string userInput)
         {
@@ -49,7 +59,7 @@ namespace SocialSecurityChecker
                 }
                 else if (userInput.Length == 11)
                 {
-                    string trimmedSSN = userInput.Remove(6, 1); // REMOVES -/+
+                    string trimmedSSN = userInput.Remove(6, 1); // REMOVE -/+
                     if (userInput.Substring(6, 1) == "-")
                     {
                         // BORN AFTER 2000
