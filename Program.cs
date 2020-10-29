@@ -23,7 +23,7 @@ namespace SocialSecurityChecker
                 bool validDay = DayCheck(socialSecurityNumber, leapYear);
                 bool validLastFour = LastFourCheck(socialSecurityNumber);
                 bool validControlNumber = ControlNumberCheck(socialSecurityNumber);
-                // PRINT OUT BASED ON METHOD RETURNS
+                // PRINT OUTS BASED ON METHOD RETURNS
                 if (validLength && validYear && validMonth && validDay && validLastFour && validControlNumber)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -36,8 +36,7 @@ namespace SocialSecurityChecker
                     Console.WriteLine($"Social security number {userInput} is not correct, please try again!\n");
                     Console.ResetColor();
                 }
-                Debug(validLength, validYear, leapYear, validMonth, validDay, validLastFour, validControlNumber, gender, socialSecurityNumber); // REMOVE WITH FINAL RELEASE
-                Console.WriteLine("\nPress enter key to search again or ctrl+c to quit");
+                Console.WriteLine("\nPress enter key to search again or ctrl+c to quit\n");
                 Console.ReadKey();
             }
         }
@@ -78,6 +77,10 @@ namespace SocialSecurityChecker
                     {
                         return "19" + trimmedSSN;
                     }
+                    else
+                    {
+                        Console.WriteLine("(!) not a valid character");
+                    }
                 }
                 return userInput;
             }
@@ -86,22 +89,6 @@ namespace SocialSecurityChecker
                 Console.WriteLine("(!) Not a valid input");
                 return "";
             }
-        }
-        // REMOVE WITH FINAL RELEASE
-        static void Debug(bool validLength, bool validYear, bool leapYear, bool validMonth, bool validDay, bool validLastFour, bool validControlNumber, string gender, string socialSecurityNumber)
-        {
-            Console.WriteLine("\n**********DEBUG**********");
-            Console.WriteLine($"12 Digit: {socialSecurityNumber}");
-            Console.WriteLine($"Length: {validLength}");
-            Console.WriteLine($"Year: {validYear}");
-            Console.WriteLine($"Leap Year: {leapYear}");
-            Console.WriteLine($"Month: {validMonth}");
-            Console.WriteLine($"Day: {validDay}");
-            Console.WriteLine($"Last 4: {validLastFour}");
-            Console.WriteLine($"Control Number: {validControlNumber}");
-            Console.WriteLine($"Gender: {gender}");
-            Console.WriteLine("**********DEBUG**********");
-            // END OF DEBUG
         }
         static bool InputCheck(string socialSecurityNumber)
         {
@@ -324,9 +311,8 @@ namespace SocialSecurityChecker
                     return false;
                 }
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
                 return false;
             }
         }
