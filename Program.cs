@@ -13,9 +13,9 @@ namespace SocialSecurityChecker
             {
                 Console.Write("Enter a social security number: ");
                 string userInput = Console.ReadLine();
+                // METHODS USED
                 string socialSecurityNumber = ConvertUserInput(userInput);
                 string gender = GenderCheck(socialSecurityNumber);
-                // METHODS USED
                 bool validLength = InputCheck(socialSecurityNumber);
                 bool validYear = YearCheck(socialSecurityNumber);
                 bool leapYear = LeapYearCheck(socialSecurityNumber);
@@ -99,13 +99,9 @@ namespace SocialSecurityChecker
             {
                 return true;
             }
-            else if (socialSecurityNumber.Length < 12)
+            else
             {
-                Console.WriteLine("(!) Too few numbers");
-            }
-            else if (socialSecurityNumber.Length > 12)
-            {
-                Console.WriteLine("(!) Too many numbers");
+                Console.WriteLine("(!) Incorrect amount of characters");
             }
             return false;
         }
@@ -129,6 +125,7 @@ namespace SocialSecurityChecker
         {
             try
             {
+                // CONTROL IF THE YEAR PROVIDED BY USER IS A LEAP YEAR OR NOT
                 int year = Convert.ToInt32(socialSecurityNumber.Substring(0, 4));
                 if (year % 400 == 0)
                 {
@@ -185,7 +182,7 @@ namespace SocialSecurityChecker
                             return true;
                         }
                         break;
-                    case 2:
+                    case 2: // IF FEBRUARY THAT YEAR IS A LEAP YEAR = 29 DAYS, OTHERWISE 28.
                         if (leapYear)
                         {
                             if (day >= 1 && day <= 29)
@@ -230,7 +227,7 @@ namespace SocialSecurityChecker
             try
             {
                 int penultimateNumber = Convert.ToInt32(socialSecurityNumber.Substring(10, 1));
-                if (penultimateNumber % 2 == 0 || penultimateNumber == 0)
+                if (penultimateNumber % 2 == 0 || penultimateNumber == 0) // EVEN = FEMALE | ODD = MALE
                 {
                     return "Female";
                 }
