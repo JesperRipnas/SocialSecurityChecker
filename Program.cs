@@ -9,15 +9,10 @@ namespace SocialSecurityChecker
             while (true)
             {
                 Console.Write("Enter a social security number: ");
-                // FÖR NIVÅ 2:
-                // MÅSTE KONVERTERA ALLA PERSONNUMMER MED 10 SIFFROR TILL 12 (ENKLAST PGA REDAN ANVÄND KOD)
-                // LÄGGA TILL LUHN ALGORITMEN
-                // KONTROLLERA FELHANTEIRNG
-                // KOMMENTARER
                 string userInput = Console.ReadLine();
                 string socialSecurityNumber = ConvertUserInput(userInput);
                 string gender = GenderCheck(socialSecurityNumber);
-
+                // METHODS USED
                 bool validLength = InputCheck(socialSecurityNumber);
                 bool validYear = YearCheck(socialSecurityNumber);
                 bool leapYear = LeapYearCheck(socialSecurityNumber);
@@ -25,8 +20,8 @@ namespace SocialSecurityChecker
                 bool validDay = DayCheck(socialSecurityNumber, leapYear);
                 bool validLastFour = LastFourCheck(socialSecurityNumber);
                 bool validControlNumber = ControlNumberCheck(socialSecurityNumber);
-
-                if (validLength && validYear && validMonth && validDay && validLastFour)
+                // PRINT OUT BASED ON METHOD RETURNS
+                if (validLength && validYear && validMonth && validDay && validLastFour && validControlNumber)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Social security number {userInput} is correct!\nGender: {gender}");
@@ -54,7 +49,7 @@ namespace SocialSecurityChecker
                 }
                 else if (userInput.Length == 11)
                 {
-                    string trimmedSSN = userInput.Remove(6, 1); // REMOVES -
+                    string trimmedSSN = userInput.Remove(6, 1); // REMOVES -/+
                     if (userInput.Substring(6, 1) == "-")
                     {
                         // BORN AFTER 2000
@@ -179,6 +174,7 @@ namespace SocialSecurityChecker
             {
                 int month = Convert.ToInt32(socialSecurityNumber.Substring(4, 2));
                 int day = Convert.ToInt32(socialSecurityNumber.Substring(6, 2));
+                // CHECK IF THE DAY IS IN THE RANGE OF MONTH USER PROVIDED
                 switch (month)
                 {
                     case 1: case 3: case 5: case 7: case 8: case 10: case 12:
@@ -270,10 +266,59 @@ namespace SocialSecurityChecker
                 return "";
             }
         }
-        // METHOD TO CHECK THE CONTROL DIGIT IN THE SOOCIAL SECURITY NUMBER, USING THE LUHN ALGORITHM
+        // VERIFYING CONTROL NUMBER WITH LUHN ALGORITHM
         static bool ControlNumberCheck(string socialSecurityNumber)
         {
-            return false;
+            try
+            {
+                int controlNumber = Convert.ToInt32(socialSecurityNumber.Substring(11, 1)); // CONTROL NUMBER
+                string trimmed = socialSecurityNumber.Substring(2, 9); // TRIM STRING INTO 9 DIGITS WITHOUT 19/20 AT START AND -/+
+                int[] numbers = new int[trimmed.Length];
+                int sum = 0;
+                int number = 0;
+                // FILL THE ARRAY WITH EACH NUMBER FROM TRIMMED INPUT
+                for (int i = 0; i < trimmed.Length; i++)
+                {
+                    numbers[i] = Convert.ToInt32(trimmed.Substring(i, 1));
+                }
+                // ALGORITHM
+                for (int i = 0; i < trimmed.Length; i++)
+                {
+                    if (i % 2 == 0) // EVEN INDEX GETS MULIPLIED WITH 2, ODD WITH 1
+                    {
+                        number = numbers[i] * 2;
+                        if (number >= 10) // IF SUM OF MULTIPLYING ADDS UP TO 10 OR MORE, SPLIT NUMBER INTO TWO DIGITS. ADD EACH NUMBER INTO THE TOTAL SUM
+                        {
+                            sum += Convert.ToInt32(number.ToString()[0].ToString());
+                            sum += Convert.ToInt32(number.ToString()[1].ToString());
+                        }
+                        else
+                        {
+                            sum += Convert.ToInt32(number.ToString()[0].ToString());
+                        }
+                    }
+                    else
+                    {
+                        sum += numbers[i] * 1;
+                    }
+                }
+                int numberOfSum = (10 - (sum % 10)) % 10;
+                // CHECKING IF THE RESULT IS THE SAME AS THE CONTROL NUMBER INPUT FROM USER
+                if (numberOfSum == controlNumber)
+                {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("(!) Not a valid control number");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
     }
 }
